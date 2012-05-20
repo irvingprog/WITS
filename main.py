@@ -12,6 +12,22 @@ from Timer import Timer
 from CfgUtils import CfgUtils
 print "Modules imported"
 
+try:
+    import android
+    print "android module imported"
+except ImportError:
+    android = None
+
+scene = None
+
+SCREEN_WIDTH = 1024
+SCREEN_HEIGHT = 700
+
+screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
+pygame.display.set_caption("WITS for PC v1.0")
+pygame.display.set_icon(pygame.image.load("resources/star.png").convert_alpha())
+print "Windows created"
+
 '''
 ####################################################
 #                  SCENES                          #
@@ -19,7 +35,7 @@ print "Modules imported"
 '''     
 class Menu():
     def __init__(self):
-        self.image = pygame.image.load('resources/background_menu.png')
+        self.image = pygame.image.load('resources/background_menu.png').convert()
 
         self.button_play = Button('resources/Button1.png',SCREEN_WIDTH/2,300)
         self.button_options = Button('resources/Button1.png',SCREEN_WIDTH/2,425)
@@ -70,7 +86,7 @@ class Menu():
 
 class Difficult():
     def __init__(self):
-        self.image = pygame.image.load('resources/background_easy.jpg')
+        self.image = pygame.image.load('resources/background_easy.jpg').convert()
 
         self.button_easy = Button('resources/Boton_dificultad1.png',512,250)
         self.button_medium = Button('resources/Boton_dificultad2.png',512,375)
@@ -120,13 +136,13 @@ class LevelsSelector():
         self.difficult = difficult
 
         if self.difficult == "Easy":
-            self.image = pygame.image.load('resources/background_easy.jpg')
+            self.image = pygame.image.load('resources/background_easy.jpg').convert()
             self.level_button = 'resources/Boton_nivel1.png'
         elif self.difficult == "Medium":
-            self.image = pygame.image.load('resources/background_medium.jpg')
+            self.image = pygame.image.load('resources/background_medium.jpg').convert()
             self.level_button = 'resources/Boton_nivel2.png'
         elif self.difficult == "Hard":
-            self.image = pygame.image.load('resources/background_hard.jpg')
+            self.image = pygame.image.load('resources/background_hard.jpg').convert()
             self.level_button = 'resources/Boton_nivel3.png'
 
         self.levels = []
@@ -184,25 +200,36 @@ class LevelsSelector():
         self.title.draw(screen)
         pygame.display.flip()      
         
+class WorldSelector():
+    def __init__(self, arg):
+        pass
 
 class Options():
     def __init__(self):
-        self.configuracion = CfgUtils('configuracion.cfg')
-        self.lenguaje = self.configuracion.leer('Options', 'lenguaje')
+        self.blanco = (255,255,255)
 
-        self.fuente = pygame.font.Font('resources/ThrowMyHandsUpintheAirBold.ttf',85)
+        self.configuration = CfgUtils('configuration.cfg')
+        self.language = self.configuration.read('Options', 'language')
 
-        self.title = Texto(self.fuente,self.configuracion.leer(self.lenguaje,'options'),(255,255,255),512,70)
+        self.bigfont = pygame.font.Font('resources/ThrowMyHandsUpintheAirBold.ttf',85)
+        self.middlefont = pygame.font.Font('resources/ThrowMyHandsUpintheAirBold.ttf',45)
+
+        self.title = Text(self.bigfont,self.configuration.read(self.language,'options'),self.blanco,SCREEN_WIDTH/2,70)
+        self.language_text = Text(self.middlefont,self.configuration.read(self.language,'language')+":"+self.configuration.read('Options','language'),self.blanco,200,250)
+        self.fullscreen_text = Text(self.middlefont,self.configuration.read(self.language,'fullscreen')+":"+self.configuration.read('Options','fullscreen'),self.blanco,200,350)
+        self.sound_text = Text(self.middlefont,self.configuration.read(self.language,'sound')+":"+self.configuration.read('Options','sound'),self.blanco,200,450)
 
     def update(self):
         for event in pygame.event.get():
-            if event.type == KEYDOWN:
-                if event.key == K_ESCAPE:
-                    exit()
+            if event.type == QUIT or event.type == KEYDOWN and event.key == K_ESCAPE:
+                exit()
     
     def draw(self,screen):
         screen.fill((0,0,0))
         self.title.draw(screen)
+        self.language_text.draw(screen)
+        self.fullscreen_text.draw(screen)
+        self.sound_text.draw(screen)
         pygame.display.flip()   
         
         
@@ -257,7 +284,7 @@ class Game():
         #Level Creator
         for Level in range(1,31):
             if Level==self.level:
-                self.image = pygame.image.load('resources/bgnivel'+str(Level)+'.jpg')
+                self.image = pygame.image.load('resources/bgnivel'+str(Level)+'.jpg').convert()
                 self.name = self.levels_names[Level-1]
         
         self.font = pygame.font.Font('resources/ThrowMyHandsUpintheAirBold.ttf',35)        
@@ -269,7 +296,7 @@ class Game():
 
         self.star = Star(self.difficult)        
         self.button_nextlevel = ButtonNextLevel()
-        self.sprites = pygame.sprite.Group()
+        self.sprites = pygame.sprite.RenderUpdates()
         self.sprites.add(self.star)
         self.sprites.add(self.button_nextlevel)
 
@@ -364,15 +391,7 @@ def levelhard_start():
     print "Changed scene to LevelsSelector(Hard)"
     global scene
     scene = LevelsSelector(0,"Hard")
-scene = None
 
-SCREEN_WIDTH = 1024
-SCREEN_HEIGHT = 768
-
-screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
-pygame.display.set_caption("WITS for PC v1.0")
-pygame.display.set_icon(pygame.image.load("resources/star.png"))
-print "Windows created"
 
 '''
 ####################################################
@@ -387,8 +406,18 @@ def main():
 
     scene=Menu()
 
+    if android:
+        android.init()
+        android.map_key(android.KEYCODE_BACK, pygame.K_ESCAPE)
+
     while True:
         clock.tick()
+        print clock.get_fps()
+
+        if android:
+            if android.check_pause():
+                android.wait_for_resume()
+
         scene.update()
         scene.draw(screen)
         
