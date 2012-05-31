@@ -37,6 +37,8 @@ class Menu():
     def __init__(self):
         self.image = pygame.image.load('resources/background_menu.png').convert()
 
+        self.position_credits = [1550,650]
+
         self.button_play = Button('resources/button_play.png',SCREEN_WIDTH/2,350)
         #self.button_options = Button('resources/Button1.png',SCREEN_WIDTH/2,425)
         #self.button_credits = Button('resources/Button1.png',SCREEN_WIDTH/2,550)
@@ -51,13 +53,20 @@ class Menu():
         self.configuration = CfgUtils('configuration/configuration.cfg')
         self.language = self.configuration.read('Options', 'language')
 
-        self.font = pygame.font.Font('resources/CrashLandingBB.ttf',170)      
+        #Creditos 
+        self.mainidea = self.configuration.read(self.language,'mainidea')
+        self.developer = self.configuration.read(self.language,'developer')
+        self.graphics = self.configuration.read(self.language,'graphics')
+        self.thanks = self.configuration.read(self.language,'thanks')
+        self.license = self.configuration.read(self.language,'license')
+
+        self.font = pygame.font.Font('resources/CrashLandingBB.ttf',170) 
+        self.font_credits = pygame.font.Font('resources/CrashLandingBB.ttf',30)     
 
         self.text_play = Text(self.font,self.configuration.read(self.language,'play'),(255,255,255),SCREEN_WIDTH/2,360)
         #self.text_options = Text(self.font,self.configuration.read(self.language,'options'),(255,255,255),512,425)
-        #self.text_credits = Text(self.font,self.configuration.read(self.language,'credits'),(255,255,255),512,550)
         #self.text_exit = Text(self.font,self.configuration.read(self.language,'exit'),(255,255,255),512,675)
-
+     
         print "Menu() created"
 
     def update(self):
@@ -73,14 +82,23 @@ class Menu():
                 #if self.button_credits.rect.collidepoint(event.pos[0],event.pos[1]):
                     #print "credits"
                 #if self.button_exit.rect.collidepoint(event.pos[0],event.pos[1]):
-                    #exit()  
+                    #exit() 
+
+        self.position_credits[0] -= 1
+        if self.position_credits[0] < -750:
+            self.position_credits[0] = 1550
 
     def draw(self,screen):
+
+        #Animated text for credits
+        self.text_credits = Text(self.font_credits,str(self.mainidea)+"    "+str(self.developer)+"    "+str(self.graphics)+"    "+ 
+        str(self.thanks)+"    "+str(self.license), (255,255,255),self.position_credits[0],self.position_credits[1])
+   
         screen.blit(self.image,(0,0))
         self.buttons.draw(screen)
         self.text_play.draw(screen)
         #self.text_options.draw(screen)
-        #self.text_credits.draw(screen)
+        self.text_credits.draw(screen)
         #self.text_exit.draw(screen)
         pygame.display.flip();
 
