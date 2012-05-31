@@ -48,7 +48,7 @@ class Menu():
         #self.buttons.add(self.button_credits)
         #self.buttons.add(self.button_exit)
         
-        self.configuration = CfgUtils('configuration.cfg')
+        self.configuration = CfgUtils('configuration/configuration.cfg')
         self.language = self.configuration.read('Options', 'language')
 
         self.font = pygame.font.Font('resources/CrashLandingBB.ttf',170)      
@@ -86,7 +86,7 @@ class Menu():
 
 class Difficult():
     def __init__(self):
-        self.image = pygame.image.load('resources/background_easy.jpg').convert()
+        self.image = pygame.image.load('resources/background_Easy.jpg').convert()
 
         self.button_easy = Button('resources/Boton_dificultad1.png',512,250)
         self.button_medium = Button('resources/Boton_dificultad2.png',512,375)
@@ -97,7 +97,7 @@ class Difficult():
         self.buttons.add(self.button_medium)
         self.buttons.add(self.button_hard)
 
-        self.configuration = CfgUtils('configuration.cfg')
+        self.configuration = CfgUtils('configuration/configuration.cfg')
         self.language = self.configuration.read('Options', 'language')
 
         self.font = pygame.font.Font('resources/ThrowMyHandsUpintheAirBold.ttf',85)    
@@ -136,25 +136,18 @@ class LevelsSelector():
         self.continent = continent
         self.difficult = difficult
 
-        if self.difficult == "Easy":
-            self.image = pygame.image.load('resources/background_easy.jpg').convert()
-            self.level_button = 'resources/Boton_nivel1.png'
-        elif self.difficult == "Medium":
-            self.image = pygame.image.load('resources/background_medium.jpg').convert()
-            self.level_button = 'resources/Boton_nivel2.png'
-        elif self.difficult == "Hard":
-            self.image = pygame.image.load('resources/background_hard.jpg').convert()
-            self.level_button = 'resources/Boton_nivel3.png'
+        self.image = pygame.image.load('resources/background_'+self.difficult+'.jpg').convert()
+        self.level_button = 'resources/Boton_'+self.difficult+'.png'
 
         self.levels = []
         self.numbers = []
         self.text_numbers = []
         self.starscalification = []
 
-        self.configuration = CfgUtils('configuration.cfg')
+        self.configuration = CfgUtils('configuration/configuration.cfg')
         self.language = self.configuration.read('Options', 'language')
 
-        self.levels_cfg = CfgUtils('levels.cfg')
+        self.levels_cfg = CfgUtils('configuration/levels_rating.cfg')
 
         self.font = pygame.font.Font('resources/ThrowMyHandsUpintheAirBold.ttf',85)    
 
@@ -165,7 +158,7 @@ class LevelsSelector():
 
         for i in range(0,15):
             self.numbers.append(i+1)
-            self.calification_level = self.levels_cfg.read(self.difficult,str(i+1+self.selector))
+            self.calification_level = self.levels_cfg.read(self.continent+self.difficult,str(i+1+self.selector))
             if i <5:
                 self.levels.append(Button(self.level_button,174+175*i,250))
                 self.text_numbers.append(Text(self.font,self.numbers[i]+self.selector,(255,255,255),174+175*i,250))
@@ -209,7 +202,7 @@ class Options():
     def __init__(self):
         self.blanco = (255,255,255)
 
-        self.configuration = CfgUtils('configuration.cfg')
+        self.configuration = CfgUtils('configuration/configuration.cfg')
         self.language = self.configuration.read('Options', 'language')
 
         self.bigfont = pygame.font.Font('resources/ThrowMyHandsUpintheAirBold.ttf',85)
@@ -353,7 +346,7 @@ def difficult_start():
 def leveleasy_start():
     print "Changed scene to LevelsSelector(Easy)"
     global scene
-    scene = LevelsSelector("Easy")
+    scene = LevelsSelector("Africa","Easy")
 
 def levelmedium_start():
     print "Changed scene to LevelsSelector(Medium)"
@@ -377,7 +370,7 @@ def main():
     
     clock = pygame.time.Clock()
 
-    scene=Game(1, "Africa", "Easy")
+    scene=Menu()
 
     if android:
         android.init()
