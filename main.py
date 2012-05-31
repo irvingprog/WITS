@@ -37,26 +37,26 @@ class Menu():
     def __init__(self):
         self.image = pygame.image.load('resources/background_menu.png').convert()
 
-        self.button_play = Button('resources/Button1.png',SCREEN_WIDTH/2,300)
-        self.button_options = Button('resources/Button1.png',SCREEN_WIDTH/2,425)
-        self.button_credits = Button('resources/Button1.png',SCREEN_WIDTH/2,550)
-        self.button_exit = Button('resources/Button1.png',SCREEN_WIDTH/2,675)
+        self.button_play = Button('resources/button_play.png',SCREEN_WIDTH/2,350)
+        #self.button_options = Button('resources/Button1.png',SCREEN_WIDTH/2,425)
+        #self.button_credits = Button('resources/Button1.png',SCREEN_WIDTH/2,550)
+        #self.button_exit = Button('resources/Button1.png',SCREEN_WIDTH/2,675)
 
         self.buttons = pygame.sprite.Group()
         self.buttons.add(self.button_play)
-        self.buttons.add(self.button_options)
-        self.buttons.add(self.button_credits)
-        self.buttons.add(self.button_exit)
+        #self.buttons.add(self.button_options)
+        #self.buttons.add(self.button_credits)
+        #self.buttons.add(self.button_exit)
         
         self.configuration = CfgUtils('configuration.cfg')
         self.language = self.configuration.read('Options', 'language')
 
-        self.font = pygame.font.Font('resources/ThrowMyHandsUpintheAirBold.ttf',85)      
+        self.font = pygame.font.Font('resources/CrashLandingBB.ttf',170)      
 
-        self.text_play = Text(self.font,self.configuration.read(self.language,'play'),(255,255,255),512,300)
-        self.text_options = Text(self.font,self.configuration.read(self.language,'options'),(255,255,255),512,425)
-        self.text_credits = Text(self.font,self.configuration.read(self.language,'credits'),(255,255,255),512,550)
-        self.text_exit = Text(self.font,self.configuration.read(self.language,'exit'),(255,255,255),512,675)
+        self.text_play = Text(self.font,self.configuration.read(self.language,'play'),(255,255,255),SCREEN_WIDTH/2,360)
+        #self.text_options = Text(self.font,self.configuration.read(self.language,'options'),(255,255,255),512,425)
+        #self.text_credits = Text(self.font,self.configuration.read(self.language,'credits'),(255,255,255),512,550)
+        #self.text_exit = Text(self.font,self.configuration.read(self.language,'exit'),(255,255,255),512,675)
 
         print "Menu() created"
 
@@ -68,20 +68,20 @@ class Menu():
             if event.type == MOUSEBUTTONDOWN:
                 if self.button_play.rect.collidepoint(event.pos[0],event.pos[1]):
                     difficult_start()
-                if self.button_options.rect.collidepoint(event.pos[0],event.pos[1]):
-                    options_start()
-                if self.button_credits.rect.collidepoint(event.pos[0],event.pos[1]):
-                    print "credits"
-                if self.button_exit.rect.collidepoint(event.pos[0],event.pos[1]):
-                    exit()  
+                #if self.button_options.rect.collidepoint(event.pos[0],event.pos[1]):
+                    #options_start()
+                #if self.button_credits.rect.collidepoint(event.pos[0],event.pos[1]):
+                    #print "credits"
+                #if self.button_exit.rect.collidepoint(event.pos[0],event.pos[1]):
+                    #exit()  
 
     def draw(self,screen):
         screen.blit(self.image,(0,0))
         self.buttons.draw(screen)
         self.text_play.draw(screen)
-        self.text_options.draw(screen)
-        self.text_credits.draw(screen)
-        self.text_exit.draw(screen)
+        #self.text_options.draw(screen)
+        #self.text_credits.draw(screen)
+        #self.text_exit.draw(screen)
         pygame.display.flip();
 
 class Difficult():
@@ -131,8 +131,9 @@ class Difficult():
         pygame.display.flip()
 
 class LevelsSelector():
-    def __init__(self, selector, difficult):
-        self.selector = selector
+    def __init__(self, continent, difficult):
+        self.selector = 0
+        self.continent = continent
         self.difficult = difficult
 
         if self.difficult == "Easy":
@@ -189,7 +190,7 @@ class LevelsSelector():
             if event.type == MOUSEBUTTONDOWN:
                 for i in range(0,15):  
                     if self.levels[i].rect.collidepoint(event.pos[0],event.pos[1]):
-                        game_start(i+1,self.difficult)
+                        game_start(i+1, self.continent, self.difficult)
 
     def draw(self,screen):
         screen.blit(self.image,(0,0))
@@ -234,57 +235,32 @@ class Options():
         
         
 class Game():
-    def __init__(self,level,difficult):
-        self.levels_names= [
-                       "La Cibeles - Madrid(Spain)",
-                       "Fontana di Trevi - Roma(Italy)",
-                       "Kiosko - Tampico(Mexico)",
-                       "Metropolitano -Tampico(Mexico)",
-                       "Muralla China - China",
-                       "Casa Blanca - Washington(USA)",
-                       "Torre Eiffel - Paris (France)",
-                       "Partenon - Atenas(Grece)",
-                       "Arco del Triunfo - Francia(Paris)",
-                       "Taj Mahal - Agra (India)",
-                       "Gran Piramide - Giza(Egipto)",
-                       "Estatua Libertad - N. York(USA)",
-                       "Coliseo de Roma - Roma(Italy)",
-                       "Chichen Itza - Yucatan(Mexico)",
-                       "Cristo Rendentor - Rio(Brasil)",
-                       "Opera Sydney - Sydney(Australia)",
-                       "Lincoln M. - Washington(USA)",
-                       "Puerta de Alcala - Madrid(Spain)",
-                       "Esfinge - Giza(Egipto)",
-                       "Big Ben - Londres(England)",
-                       "London Eye - Londres(England)",
-                       "Torre de Pisa - Pisa(Italy)",
-                       "Moais - Pascua(Chile)",
-                       "Machu Picchu - Urubamba(Peru)",
-                       "Stonehenge - Wiltshire(U.K.)",
-                       "Cat.S.Basilio - Moscu(Rusia)",
-                       "Sirenita - Copenhague(Dinamarca)",
-                       "Kiyomizu Dera - Kioto(Japon)",
-                       "Monte Fuji - Honshu(Japon)",
-                       "Piramides - Teotihuacan(Mexico)",
-                       "Catedral - Santiago (Spain)",
-                       "Acueducto - Segovia(Spain)",
-                       "Cuevas - Altamira (Spain)"]
-
+    def __init__(self, level, continent, difficult):
         self.level = level
-        self.difficult = difficult 
-        
-        self.configuration = CfgUtils('configuration.cfg')
+        self.continent = continent
+        self.difficult = difficult
+
+        #Configuration Files
+        self.configuration = CfgUtils('configuration/configuration.cfg')
         self.language = self.configuration.read('Options', 'language')
 
-        self.rating_level = CfgUtils('levels.cfg')
-        self.current_rating_level = int(self.rating_level.read(self.difficult,str(self.level)))
-        
+        self.rating_level = CfgUtils('configuration/levels_rating.cfg')
+        self.current_rating_level = int(self.rating_level.read(self.continent+self.difficult,str(self.level)))
+
+        self.levels_namescfg = CfgUtils('configuration/levels_names.cfg')
+
+        self.path = "resources/levels/"+self.continent+"/"
+
+        self.levels_names = []
+        for i in range(1,16): 
+            self.levels_names.append(self.levels_namescfg.read(self.continent,"bglevel"+str(self.level)))
+
         self.color = (0,0,0)
         
         #Level Creator
-        for Level in range(1,31):
+        for Level in range(1,16):
             if Level==self.level:
-                self.image = pygame.image.load('resources/bgnivel'+str(Level)+'.jpg').convert()
+                self.image = pygame.image.load(self.path+'bglevel'+str(Level)+'.jpg').convert()
                 self.name = self.levels_names[Level-1]
         
         self.font = pygame.font.Font('resources/ThrowMyHandsUpintheAirBold.ttf',35)        
@@ -302,12 +278,7 @@ class Game():
 
         self.posx_text_nextlevel = 1124
 
-        if self.difficult == "Easy":
-            self.title_shadow = pygame.image.load('resources/sombra_titulo_nivel1.png')
-        elif self.difficult == "Medium":
-            self.title_shadow = pygame.image.load('resources/sombra_titulo_nivel2.png')
-        elif self.difficult == "Hard":
-            self.title_shadow = pygame.image.load('resources/sombra_titulo_nivel3.png')
+        self.title_shadow = pygame.image.load('resources/sombra_titulo_'+self.difficult+'.png').convert_alpha()
 
     def update(self):
         for event in pygame.event.get():
@@ -315,6 +286,8 @@ class Game():
                 exit()
             if event.type == MOUSEBUTTONDOWN:
                 if self.star.rect.collidepoint(event.pos[0],event.pos[1]):
+                    if android:
+                        android.vibrate(4)
                     self.star.mover = True
                     if self.timer.time()<2:
                         self.rating_level.write(3)
@@ -330,7 +303,7 @@ class Game():
                             self.rating_level.write(1)
                     self.timer.stop()
                 if self.button_nextlevel.rect.collidepoint(event.pos[0],event.pos[1]):
-                    game_start(self.level+1,self.difficult)
+                    game_start(self.level+1, self.continent, self.difficult)
         
         self.star.update()
 
@@ -362,10 +335,10 @@ class Game():
 #              SCENE CHANGES                       #
 ####################################################
 '''
-def game_start(level,difficult):
-    print "Changed scene to Game() Level: "+str(level)+ " Difficult: "+difficult
+def game_start(level, continent, difficult):
+    print "Changed scene to Game()"+"Continent: "+str(continent)+" Level: "+str(level)+" Difficult: "+difficult
     global scene;
-    scene = Game(level,difficult)
+    scene = Game(level, continent, difficult)
 
 def options_start():
     print "Changed scene to Options()"
@@ -380,17 +353,17 @@ def difficult_start():
 def leveleasy_start():
     print "Changed scene to LevelsSelector(Easy)"
     global scene
-    scene = LevelsSelector(0,"Easy")
+    scene = LevelsSelector("Easy")
 
 def levelmedium_start():
     print "Changed scene to LevelsSelector(Medium)"
     global scene
-    scene = LevelsSelector(0,"Medium")  
+    scene = LevelsSelector("Medium")  
 
 def levelhard_start():
     print "Changed scene to LevelsSelector(Hard)"
     global scene
-    scene = LevelsSelector(0,"Hard")
+    scene = LevelsSelector("Hard")
 
 
 '''
@@ -404,7 +377,7 @@ def main():
     
     clock = pygame.time.Clock()
 
-    scene=Menu()
+    scene=Game(1, "Africa", "Easy")
 
     if android:
         android.init()
@@ -412,7 +385,7 @@ def main():
 
     while True:
         clock.tick()
-        print clock.get_fps()
+        #print clock.get_fps()
 
         if android:
             if android.check_pause():

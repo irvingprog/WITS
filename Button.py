@@ -11,7 +11,7 @@ class Button(Sprite):
 class ButtonNextLevel(Sprite):
 	def __init__(self):
 		Sprite.__init__(self)
-		self.image = pygame.image.load("resources/siguientenivel.png").convert()
+		self.image = pygame.image.load("resources/siguientenivel.png").convert_alpha()
 		self.rect = self.image.get_rect()
 		self.rect.height = 75
 		self.rect.x = 1024

@@ -15,7 +15,7 @@ class CfgUtils():
     
     def write(self,newvalue):
             self.newvalue = newvalue
-            self.archive.set(self.section, self.value_, str(self.newvalue))
+            self.archive.set(self.section, self.value, str(self.newvalue))
             f = open(self.archivename, "w")  
             self.archive.write(f)  
             f.close()     
