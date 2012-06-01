@@ -324,17 +324,17 @@ class Game():
                         android.vibrate(4)
                     self.star.mover = True
                     if self.timer.time()<2:
-                        self.rating_level.write(3)
+                        self.rating_level.write(self.continent+self.difficult,str(self.level),3)
                     elif self.timer.time()>=2 and self.timer.time()<= 4:
                         if self.current_rating_level == 3:
                             pass
                         else:
-                            self.rating_level.write(2)
+                            self.rating_level.write(self.continent+self.difficult,str(self.level),2)
                     elif self.timer.time()> 4:
                         if self.current_rating_level == 2 or self.current_rating_level == 3:
                             pass
                         else:
-                            self.rating_level.write(1)
+                            self.rating_level.write(self.continent+self.difficult,str(self.level),1)
                     self.timer.stop()
                 if self.button_nextlevel.rect.collidepoint(event.pos[0],event.pos[1]):
                     game_start(self.level+1, self.continent, self.difficult)
