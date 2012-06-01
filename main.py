@@ -113,17 +113,18 @@ class Difficult():
         self.buttons.add(self.button_hard)
 
         self.configuration = CfgUtils('configuration/configuration.cfg')
-        self.language = self.configuration.read('Options', 'language')
+        self.languageID = self.configuration.read('Options','language')
+        self.language = CfgUtils('configuration/language.cfg')
 
         self.fonts = {
                     'large' : pygame.font.Font('resources/CrashLandingBB.ttf',170), 
                     'medium' : pygame.font.Font('resources/ThrowMyHandsUpintheAirBold.ttf',85),
         }    
 
-        self.title = Text(self.fonts['large'],self.configuration.read(self.language,'dificult'),(255,255,255),512,70)
-        self.text_easy = Text(self.fonts['medium'],self.configuration.read(self.language,'easy'),(255,255,255),512,250)
-        self.text_medium = Text(self.fonts['medium'],self.configuration.read(self.language,'medium'),(255,255,255),512,375)
-        self.text_hard = Text(self.fonts['medium'],self.configuration.read(self.language,'hard'),(255,255,255),512,500)
+        self.title = Text(self.fonts['large'],self.language.read(self.languageID,'dificult'),(255,255,255),512,70)
+        self.text_easy = Text(self.fonts['medium'],self.language.read(self.languageID,'easy'),(255,255,255),512,250)
+        self.text_medium = Text(self.fonts['medium'],self.language.read(self.languageID,'medium'),(255,255,255),512,375)
+        self.text_hard = Text(self.fonts['medium'],self.language.read(self.languageID,'hard'),(255,255,255),512,500)
 
         print "Difficult() created"
 
@@ -163,7 +164,8 @@ class LevelsSelector():
         self.starscalification = []
 
         self.configuration = CfgUtils('configuration/configuration.cfg')
-        self.language = self.configuration.read('Options', 'language')
+        self.languageID = self.configuration.read('Options','language')
+        self.language = CfgUtils('configuration/language.cfg')
 
         self.levels_cfg = CfgUtils('configuration/levels_rating.cfg')
 
@@ -175,7 +177,7 @@ class LevelsSelector():
         self.buttons_levels = pygame.sprite.Group()
         self.califications_levels = pygame.sprite.Group()
 
-        self.title = Text(self.fonts['large'],self.configuration.read(self.language,'levels'),(255,255,255),512,70)
+        self.title = Text(self.fonts['large'],self.language.read(self.languageID,'levels'),(255,255,255),512,70)
 
         for i in range(0,15):
             self.numbers.append(i+1)
@@ -273,7 +275,8 @@ class Game():
 
         #Configuration Files
         self.configuration = CfgUtils('configuration/configuration.cfg')
-        self.language = self.configuration.read('Options', 'language')
+        self.languageID = self.configuration.read('Options','language')
+        self.language = CfgUtils('configuration/language.cfg')
 
         self.rating_level = CfgUtils('configuration/levels_rating.cfg')
         self.current_rating_level = int(self.rating_level.read(self.continent+self.difficult,str(self.level)))
@@ -350,7 +353,7 @@ class Game():
     def draw(self,screen):
         #self.texto_temporizador para que no de error al draw.
         #self.texto_temporizador = Texto(self.fuente, self.temporizador.time(),self.color,SCREEN_WIDTH/2,60)
-        self.text_nextlevel = Text(self.font,self.configuration.read(self.language,'nextlevel'),self.color,self.posx_text_nextlevel,650)
+        self.text_nextlevel = Text(self.font,self.language.read(self.languageID,'nextlevel'),self.color,self.posx_text_nextlevel,650)
 
         screen.blit(self.image,(0,0))
         screen.blit(self.title_shadow,(0,0))
