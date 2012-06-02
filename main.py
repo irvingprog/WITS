@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import pygame
-
 from pygame.locals import *
 
 from Star import Star, StarsCalification
 from Button import Button, ButtonNextLevel
 from Text import Text
 from Timer import Timer
+
+import os
 
 from CfgUtils import CfgUtils
 print "Modules imported"
@@ -35,22 +36,22 @@ print "Windows created"
 '''     
 class Menu():
     def __init__(self):
-        self.image = pygame.image.load('resources/background_menu.png').convert()
+        self.image = pygame.image.load("resources/background_menu.png").convert()
 
         self.position_credits = [1650,650]
 
-        self.button_play = Button('resources/button_play.png',SCREEN_WIDTH/2,350)
-        self.button_configuration = Button('resources/configuration.png',80,250)
-        self.button_exit = Button('resources/exit.png',80,375)
+        self.button_play = Button("resources/button_play.png",SCREEN_WIDTH/2,350)
+        self.button_configuration = Button("resources/button_configuration.png",300,350)
+        self.button_exit = Button("resources/button_exit.png",725,350)
 
         self.buttons = pygame.sprite.Group()
         self.buttons.add(self.button_play)
         self.buttons.add(self.button_configuration)
         self.buttons.add(self.button_exit)
         
-        self.configuration = CfgUtils('configuration/configuration.cfg')
+        self.configuration = CfgUtils("configuration/configuration.cfg")
         self.languageID = self.configuration.read('Options','language')
-        self.language = CfgUtils('configuration/language.cfg')
+        self.language = CfgUtils("configuration/language.cfg")
 
         #Creditos 
         self.mainidea = self.language.read(self.languageID,'mainidea')
@@ -60,12 +61,19 @@ class Menu():
         self.license = self.language.read(self.languageID,'license')
 
         self.fonts = {
-                    'large' : pygame.font.Font('resources/CrashLandingBB.ttf',170), 
-                    'small' : pygame.font.Font('resources/CrashLandingBB.ttf',30)     
+                    'large' : pygame.font.Font("resources/CrashLandingBB.ttf",120), 
+                    'middle' : pygame.font.Font("resources/CrashLandingBB.ttf",40),
+                    'small' : pygame.font.Font("resources/CrashLandingBB.ttf",30)     
         }
 
-        self.text_play = Text(self.fonts['large'],self.language.read(self.languageID,'play'),(255,255,255),SCREEN_WIDTH/2,360)
-     
+        self.colors = {
+                    'blanco' : (255,255,255)
+        }
+
+        self.text_play = Text(self.fonts['large'],self.language.read(self.languageID,'play'),self.colors['blanco'],SCREEN_WIDTH/2,360)
+        self.text_configuration = Text(self.fonts['middle'],self.language.read(self.languageID,'configuration'),self.colors['blanco'],300,450)
+        self.text_exit = Text(self.fonts['middle'],self.language.read(self.languageID,'exit'),self.colors['blanco'],725,450)
+
         print "Menu() created"
 
     def update(self):
@@ -86,17 +94,16 @@ class Menu():
             self.position_credits[0] = 1650
 
     def draw(self,screen):
-
         #Animated text for credits
         self.text_credits = Text(self.fonts['small'],str(self.mainidea)+"    "+str(self.developer)+"    "+str(self.graphics)+"    "+ 
         str(self.thanks)+"    "+str(self.license), (255,255,255),self.position_credits[0],self.position_credits[1])
-   
+
         screen.blit(self.image,(0,0))
         self.buttons.draw(screen)
         self.text_play.draw(screen)
-        #self.text_options.draw(screen)
+        self.text_configuration.draw(screen)
         self.text_credits.draw(screen)
-        #self.text_exit.draw(screen)
+        self.text_exit.draw(screen)
         pygame.display.flip();
 
 class Difficult():
@@ -321,7 +328,7 @@ class Game():
             if event.type == MOUSEBUTTONDOWN:
                 if self.star.rect.collidepoint(event.pos[0],event.pos[1]):
                     if android:
-                        android.vibrate(4)
+                        android.vibrate(1)
                     self.star.mover = True
                     if self.timer.time()<2:
                         self.rating_level.write(self.continent+self.difficult,str(self.level),3)
@@ -351,7 +358,7 @@ class Game():
             self.button_nextlevel.update()
             
     def draw(self,screen):
-        #self.texto_temporizador para que no de error al draw.
+        #self.texto_temporizador para que no de error el draw.
         #self.texto_temporizador = Texto(self.fuente, self.temporizador.time(),self.color,SCREEN_WIDTH/2,60)
         self.text_nextlevel = Text(self.font,self.language.read(self.languageID,'nextlevel'),self.color,self.posx_text_nextlevel,650)
 
@@ -392,13 +399,12 @@ def leveleasy_start():
 def levelmedium_start():
     print "Changed scene to LevelsSelector(Medium)"
     global scene
-    scene = LevelsSelector("Medium")  
+    scene = LevelsSelector("Africa","Medium")  
 
 def levelhard_start():
     print "Changed scene to LevelsSelector(Hard)"
     global scene
-    scene = LevelsSelector("Hard")
-
+    scene = LevelsSelector("Africa","Hard")
 
 '''
 ####################################################
@@ -411,11 +417,11 @@ def main():
     
     clock = pygame.time.Clock()
 
-    scene=Menu()
+    scene=WorldSelector()
 
     if android:
-        android.init()
-        android.map_key(android.KEYCODE_BACK, pygame.K_ESCAPE)
+        android.init() #Android start
+        android.map_key(android.KEYCODE_BACK, pygame.K_ESCAPE) #mapkey for Android
 
     while True:
         clock.tick()
@@ -423,10 +429,10 @@ def main():
 
         if android:
             if android.check_pause():
-                android.wait_for_resume()
+                android.wait_for_resume() 
 
         scene.update()
         scene.draw(screen)
-        
+
 if __name__ == '__main__':
     main()
