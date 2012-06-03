@@ -8,8 +8,6 @@ from Button import Button, ButtonNextLevel
 from Text import Text
 from Timer import Timer
 
-import os
-
 from CfgUtils import CfgUtils
 print "Modules imported"
 
@@ -460,12 +458,12 @@ def leveleasy_start(continent,difficult):
     global scene
     scene = LevelsSelector(continent,difficult)
 
-def levelmedium_start(continent):
+def levelmedium_start(continent,difficult):
     print "Changed scene to LevelsSelector(Medium)"
     global scene
     scene = LevelsSelector(continent,difficult)  
 
-def levelhard_start(continent):
+def levelhard_start(continent,difficult):
     print "Changed scene to LevelsSelector(Hard)"
     global scene
     scene = LevelsSelector(continent,difficult)

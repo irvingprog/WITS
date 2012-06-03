@@ -6,12 +6,7 @@ class Star(Sprite):
     def __init__(self,difficult):
         Sprite.__init__(self)
         self.difficult = difficult
-        if self.difficult == "Easy":
-            self.image = pygame.image.load("resources/estrella.png").convert_alpha()
-        elif self.difficult == "Medium":
-            self.image = pygame.image.load("resources/estrella2.png").convert_alpha()
-        elif self.difficult == "Hard":
-            self.image = pygame.image.load("resources/estrella3.png").convert_alpha()
+        self.image = pygame.image.load('resources/estrella_'+self.difficult+'.png').convert_alpha()
         self.rect = self.image.get_rect()
         self.rect.width = 80
         self.rect.height = 80
