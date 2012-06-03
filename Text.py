@@ -18,6 +18,10 @@ class Text(Sprite):
 		self.rect = self.image.get_rect()
 		self.rect.center = (self.x,self.y)
 
+	def rotate(self,angle):
+		self.angle = angle
+		self.image = pygame.transform.rotate(self.image,self.angle)
+
 	def draw(self,screen):
 		screen.blit(self.image,self.rect)
 

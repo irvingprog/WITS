@@ -241,7 +241,25 @@ class WorldSelector():
         self.buttons_continent.add(self.button_Europe)
         self.buttons_continent.add(self.button_Australia)
 
+        #Configuration Files
+        self.configuration = CfgUtils('configuration/configuration.cfg')
+        self.languageID = self.configuration.read('Options','language')
+        self.language = CfgUtils('configuration/language.cfg')
 
+        self.font = pygame.font.Font('resources/ThrowMyHandsUpintheAirBold.ttf',50)        
+        self.text_Africa = Text(self.font,self.language.read(self.languageID,"africa"),(255,255,255),110,300)
+        self.text_America = Text(self.font,self.language.read(self.languageID,"america"),(255,255,255),310,300)
+        self.text_Asia = Text(self.font,self.language.read(self.languageID,"asia"),(255,255,255),510,300)
+        self.text_Australia = Text(self.font,self.language.read(self.languageID,"australia"),(255,255,255),710,300)
+        self.text_Europe = Text(self.font,self.language.read(self.languageID,"europe"),(255,255,255),910,300)
+
+        #Rotation text's surfaces
+        self.text_Africa.rotate(50)
+        self.text_America.rotate(50)
+        self.text_Asia.rotate(50)
+        self.text_Australia.rotate(50)
+        self.text_Europe.rotate(50)
+    
     def update(self):
         for event in pygame.event.get():
             if event.type == QUIT or event.type == KEYDOWN and event.key == K_ESCAPE:
@@ -254,6 +272,11 @@ class WorldSelector():
 
     def draw(self,screen):
         self.buttons_continent.draw(screen)
+        self.text_Africa.draw(screen)
+        self.text_America.draw(screen)
+        self.text_Asia.draw(screen)
+        self.text_Australia.draw(screen)
+        self.text_Europe.draw(screen)
         pygame.display.flip()
 
 class Configuration():
