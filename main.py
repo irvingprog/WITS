@@ -83,7 +83,7 @@ class Menu():
         
             if event.type == MOUSEBUTTONDOWN:
                 if self.button_play.rect.collidepoint(event.pos[0],event.pos[1]):
-                    difficult_start()
+                    worldselector_start()
                 if self.button_configuration.rect.collidepoint(event.pos[0],event.pos[1]):
                     configuration_start()
                 if self.button_exit.rect.collidepoint(event.pos[0],event.pos[1]):
@@ -107,7 +107,9 @@ class Menu():
         pygame.display.flip();
 
 class Difficult():
-    def __init__(self):
+    def __init__(self,continent):
+        self.continent = continent
+
         self.image = pygame.image.load('resources/background_Easy.jpg').convert()
 
         self.button_easy = Button('resources/Boton_dificultad1.png',512,250)
@@ -141,11 +143,11 @@ class Difficult():
                 exit()
             if event.type == MOUSEBUTTONDOWN:
                 if self.button_easy.rect.collidepoint(event.pos[0],event.pos[1]):
-                    leveleasy_start()
+                    leveleasy_start(self.continent,"Easy")
                 if self.button_medium.rect.collidepoint(event.pos[0],event.pos[1]):
-                    levelmedium_start()
+                    levelmedium_start(self.continent,"Medium")
                 if self.button_hard.rect.collidepoint(event.pos[0],event.pos[1]):
-                    levelhard_start()
+                    levelhard_start(self.continent,"Hard")
 
     def draw(self,screen):
         screen.blit(self.image,(0,0))
@@ -225,8 +227,34 @@ class LevelsSelector():
         pygame.display.flip()      
         
 class WorldSelector():
-    def __init__(self, arg):
-        pass
+    def __init__(self):
+        self.button_Africa = Button('resources/button_Africa.png',110,400)
+        self.button_America = Button('resources/button_America.png',310,400)
+        self.button_Asia = Button('resources/button_America.png',510,400)
+        self.button_Europe = Button('resources/button_Europe.png',710,400)
+        self.button_Australia = Button('resources/button_America.png',910,400)
+
+        self.buttons_continent = pygame.sprite.Group()
+        self.buttons_continent.add(self.button_Africa)
+        self.buttons_continent.add(self.button_America)
+        self.buttons_continent.add(self.button_Asia)
+        self.buttons_continent.add(self.button_Europe)
+        self.buttons_continent.add(self.button_Australia)
+
+
+    def update(self):
+        for event in pygame.event.get():
+            if event.type == QUIT or event.type == KEYDOWN and event.key == K_ESCAPE:
+                exit()
+
+            if event.type == MOUSEBUTTONDOWN:
+                if self.button_Africa.rect.collidepoint(event.pos[0],event.pos[1]):
+                    difficult_start("Africa")
+
+
+    def draw(self,screen):
+        self.buttons_continent.draw(screen)
+        pygame.display.flip()
 
 class Configuration():
     def __init__(self):
@@ -272,7 +300,6 @@ class Configuration():
         self.sound_text.draw(screen)
         self.sprites.draw(screen)
         pygame.display.flip()   
-        
         
 class Game():
     def __init__(self, level, continent, difficult):
@@ -325,6 +352,8 @@ class Game():
         for event in pygame.event.get():
             if event.type == QUIT or event.type == KEYDOWN and event.key == K_ESCAPE:
                 exit()
+            if event.type == KEYDOWN and event.key == K_s:
+                Pause()                    
             if event.type == MOUSEBUTTONDOWN:
                 if self.star.rect.collidepoint(event.pos[0],event.pos[1]):
                     if android:
@@ -386,25 +415,30 @@ def configuration_start():
     global scene
     scene = Configuration()
 
-def difficult_start():
+def worldselector_start():
+    print "Changed scene to WorldSelector()"
+    global scene
+    scene = WorldSelector()
+
+def difficult_start(continent):
     print "Changed scene to Difficult()"
     global scene
-    scene = Difficult()
+    scene = Difficult(continent)
 
-def leveleasy_start():
+def leveleasy_start(continent,difficult):
     print "Changed scene to LevelsSelector(Easy)"
     global scene
-    scene = LevelsSelector("Africa","Easy")
+    scene = LevelsSelector(continent,difficult)
 
-def levelmedium_start():
+def levelmedium_start(continent):
     print "Changed scene to LevelsSelector(Medium)"
     global scene
-    scene = LevelsSelector("Africa","Medium")  
+    scene = LevelsSelector(continent,difficult)  
 
-def levelhard_start():
+def levelhard_start(continent):
     print "Changed scene to LevelsSelector(Hard)"
     global scene
-    scene = LevelsSelector("Africa","Hard")
+    scene = LevelsSelector(continent,difficult)
 
 '''
 ####################################################
@@ -417,7 +451,7 @@ def main():
     
     clock = pygame.time.Clock()
 
-    scene=WorldSelector()
+    scene=Menu()
 
     if android:
         android.init() #Android start

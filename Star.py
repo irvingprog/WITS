@@ -13,8 +13,8 @@ class Star(Sprite):
         elif self.difficult == "Hard":
             self.image = pygame.image.load("resources/estrella3.png").convert_alpha()
         self.rect = self.image.get_rect()
-        self.rect.width = 60
-        self.rect.height = 64
+        self.rect.width = 80
+        self.rect.height = 80
         self.rect.x = random.randint(0,950)
         self.rect.y = random.randint(50,650)
         
