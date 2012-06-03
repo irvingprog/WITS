@@ -268,7 +268,14 @@ class WorldSelector():
             if event.type == MOUSEBUTTONDOWN:
                 if self.button_Africa.rect.collidepoint(event.pos[0],event.pos[1]):
                     difficult_start("Africa")
-
+                if self.button_America.rect.collidepoint(event.pos[0],event.pos[1]):
+                    difficult_start("America")
+                if self.button_Asia.rect.collidepoint(event.pos[0],event.pos[1]):
+                    difficult_start("Asia")
+                if self.button_Australia.rect.collidepoint(event.pos[0],event.pos[1]):
+                    difficult_start("Australia")
+                if self.button_Europe.rect.collidepoint(event.pos[0],event.pos[1]):
+                    difficult_start("Europe")
 
     def draw(self,screen):
         self.buttons_continent.draw(screen)
