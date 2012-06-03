@@ -24,13 +24,6 @@ class StarsCalification(Sprite):
     def __init__(self,calification,posx,posy):
         Sprite.__init__(self)
         self.calification = calification
-        if self.calification == 0:
-            self.image = pygame.image.load('resources/calificacion0.png').convert_alpha()
-        elif self.calification == 1:
-            self.image = pygame.image.load('resources/calificacion1.png').convert_alpha()
-        elif self.calification == 2:
-            self.image = pygame.image.load('resources/calificacion2.png').convert_alpha()        
-        elif self.calification == 3:
-            self.image = pygame.image.load('resources/calificacion3.png').convert_alpha()
+        self.image = pygame.image.load('resources/calificacion'+str(self.calification)+'.png').convert_alpha()
         self.rect = self.image.get_rect()
         self.rect.center = (posx,posy)
