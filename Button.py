@@ -11,17 +11,16 @@ class Button(Sprite):
 class ButtonNextLevel(Sprite):
 	def __init__(self):
 		Sprite.__init__(self)
-		self.image = pygame.image.load("resources/siguientenivel.png").convert_alpha()
+		self.image = pygame.image.load("resources/button_nextlevel.png").convert_alpha()
 		self.rect = self.image.get_rect()
-		self.rect.height = 75
 		self.rect.x = 1024
-		self.rect.y = 620
+		self.rect.y = 600
 
 		self.move = False
 
 	def update(self):
 		if self.move:
 			self.rect.x -= 10
-			if self.rect.x<=784:
-				self.rect.x = 784
+			if self.rect.x<=684:
+				self.rect.x = 684
            
