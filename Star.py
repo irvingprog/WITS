@@ -22,7 +22,6 @@ class Star(Sprite):
             self.rect.x += 35
 
 class StarsCalification(Sprite):
-    """docstring for EstrellasCalification"""
     def __init__(self,calification,posx,posy):
         Sprite.__init__(self)
         self.calification = calification
@@ -31,7 +30,6 @@ class StarsCalification(Sprite):
         self.rect.center = (posx,posy)
 
 class StarMove(Sprite):
-    """docstring for StarMove"""
     def __init__(self):
         Sprite.__init__(self)
         self.image = pygame.image.load('resources/star.png').convert_alpha()

@@ -2,7 +2,6 @@ import pygame
 from pygame.sprite import Sprite
 
 class Text(Sprite):
-	"""docstring for Texto"""
 	def __init__(self, font, text, color, x, y):
 		Sprite.__init__(self)
 		self.font = font

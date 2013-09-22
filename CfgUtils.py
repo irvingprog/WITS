@@ -4,11 +4,11 @@ class CfgUtils():
     def __init__(self,archivename):
         self.archive = ConfigParser.ConfigParser()
         self.archivename = archivename
+        self.archive.read([self.archivename])
         
     def read(self,section,value):
         self.section = section 
-        self.value = value       
-        self.archive.read([self.archivename])
+        self.value = value        
         self.value_ = self.archive.get(self.section,self.value)
         
         return self.value_
