@@ -9,10 +9,12 @@ from Text import Text
 from Timer import Timer
 
 from CfgUtils import CfgUtils
-print "Modules imported"
+
+import pytweener
 
 import os
 import platform
+import math
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 if platform.system() == 'Windows':
@@ -22,6 +24,8 @@ try:
     import android
 except ImportError:
     android = None
+
+print "Modules imported"
 
 scene = None
 
@@ -433,12 +437,14 @@ class Game():
         self.timer = Timer()
         self.timer.start()
 
+        self.tweener = pytweener.Tweener()
+
         self.star = Star(self.difficult)  
-        self.button_playreboot = Button('resources/button_playreboot.png',900,25)
-        self.button_pause = Button('resources/button_pause.png',970,25)      
+        self.button_playreboot = Button('resources/button_playreboot.png',900,30)
+        self.button_pause = Button('resources/button_pause.png',970,30)      
 
         self.sprites = pygame.sprite.Group()
-        self.sprites.add(self.star)
+        #self.sprites.add(self.star)
         self.sprites.add(self.button_playreboot)
         self.sprites.add(self.button_pause)
 
@@ -447,6 +453,11 @@ class Game():
         #Pause instance
         self.pause = Pause()
 
+        #Game_Counter instance
+        self.game_counter = GameCounter()
+
+        self.clock = pygame.time.Clock()
+
     def update(self):
         for event in pygame.event.get():              
             if event.type == MOUSEBUTTONDOWN:
@@ -454,48 +465,87 @@ class Game():
                     self.pause.status = True
                 if self.button_playreboot.rect.collidepoint(event.pos[0],event.pos[1]):
                     game_start(self.level,self.continent,self.difficult)
-                if self.star.rect.collidepoint(event.pos[0],event.pos[1]):  
-                    if android:
-                        android.vibrate(1)
-                    self.star.move = True
-                    if self.timer.time()<2:
-                        self.button_nextlevel.move = True
-                        #Write rating of level and total rating of continent
-                        self.rating_level.write(self.continent+self.difficult,str(self.level),3)
-                    elif self.timer.time()>=2 and self.timer.time()<= 4:
-                        if self.current_rating_level == 3:
-                            pass
-                        else:
+                if not self.star.move:
+                    if self.star.rect.collidepoint(event.pos[0],event.pos[1]):  
+                        if android:
+                            android.vibrate(1)
+                        self.star.move = True
+                        self.star.image = self.star.image_move
+                        self.tweener.addTween(self.star,x=1024,tweenTime=1.5, tweenType=pytweener.Easing.Elastic.easeIn)
+                        if self.timer.time()<2:
                             #Write rating of level and total rating of continent
-                            self.rating_level.write(self.continent+self.difficult,str(self.level),2)
-                    elif self.timer.time()> 4:
-                        if self.current_rating_level == 2 or self.current_rating_level == 3:
-                            pass
-                        else:
-                            #Write rating of level and total rating of continent
-                            self.rating_level.write(self.continent+self.difficult,str(self.level),1)
-                    self.timer.stop()
+                            self.rating_level.write(self.continent+self.difficult,str(self.level),3)
+                            self.star.move = True
+                        elif self.timer.time()>=2 and self.timer.time()<= 4:
+                            if self.current_rating_level == 3:
+                                pass
+                            else:
+                                #Write rating of level and total rating of continent
+                                self.rating_level.write(self.continent+self.difficult,str(self.level),2)
+                        elif self.timer.time()> 4:
+                            if self.current_rating_level == 2 or self.current_rating_level == 3:
+                                pass
+                            else:
+                                #Write rating of level and total rating of continent
+                                self.rating_level.write(self.continent+self.difficult,str(self.level),1)
+                        self.timer.stop()
 
-        self.star.update()  
-            
+        self.dt = self.clock.tick(60)
+        self.tweener.update(self.dt/1000.0)
+ 
     def draw(self,screen):
-        #self.texto_temporizador para que no de error el draw.
-        #self.texto_temporizador = Texto(self.fuente, self.temporizador.time(),self.color,SCREEN_WIDTH/2,60)
-
         screen.blit(self.background,(0,0))
         screen.blit(self.title_shadow,(0,0))
         self.level_title.draw(screen)
-        #self.texto_temporizador.draw(screen)
         self.sprites.draw(screen)
-        
+
+        screen.blit(self.star.image,(self.star.x,self.star.y))
+
         pygame.display.flip()
         #Instance pause with funcion update. Parameters: screen. __draw()
         self.pause.update(screen)
 
+        #Instance GameCounter with funcion update. Parameters: screen. __draw()
+        self.game_counter.update(screen)
+
+class GameCounter():
+    def __init__(self):
+        self.background = pygame.image.load('resources/background_pause.png').convert_alpha()
+
+        self.counter = 10000
+        self.state = True
+        self.timer = Timer()
+
+        self.font = pygame.font.Font('resources/ThrowMyHandsUpintheAirBold.ttf',300) 
+        self.text_counter = Text(self.font,self.counter,(255,255,255),SCREEN_WIDTH/2,SCREEN_HEIGHT/2)       
+
+        self.timer.start()
+
+    def update(self,screen):
+        while self.state:
+            self.counter -= self.timer.time() * 100 
+
+            if self.counter < 0:
+                self.state = False 
+
+            #make text in update, why is a object that renew
+            self.text_counter = Text(self.font,int(math.ceil(self.counter/4000)),(255,255,255),SCREEN_WIDTH/2,SCREEN_HEIGHT/2)              
+            self._draw(screen)
+
+    def _draw(self,screen):  
+        #Doesnt loss images of previous scene
+        screen.blit(scene.background,(0,0))
+        screen.blit(scene.title_shadow,(0,0))
+        scene.level_title.draw(screen)
+
+        screen.blit(self.background,(0,0))
+        self.text_counter.draw(screen)
+        pygame.display.flip()
+
 class Pause():
     def __init__(self):
         self.background = pygame.image.load('resources/background_pause.png').convert_alpha()
-        self.button_play = Button('resources/button_playgame.png',760,25)
+        self.button_play = Button('resources/button_playgame.png',760,30)
 
         self.font = pygame.font.Font('resources/ThrowMyHandsUpintheAirBold.ttf',300) 
         self.text_pause = Text(self.font,language.read(languageID,'pause'),(255,255,255),SCREEN_WIDTH/2,SCREEN_HEIGHT/2)
@@ -565,8 +615,8 @@ def main():
     clock = pygame.time.Clock()
 
     #scene = LevelsSelector("Africa","Easy")
-    #scene = WorldSelector()
-    scene = Menu()
+    scene = WorldSelector()
+    #scene = Menu()
     #scene = Game(3,"Africa","Easy")
 
     if android:

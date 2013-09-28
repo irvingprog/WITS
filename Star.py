@@ -2,6 +2,7 @@ import pygame
 from pygame.sprite import Sprite
 import random
 
+
 class Star(Sprite):
     def __init__(self,difficult):
         Sprite.__init__(self)
@@ -13,13 +14,11 @@ class Star(Sprite):
         self.rect.height = 80
         self.rect.x = random.randint(0,950)
         self.rect.y = random.randint(50,650)
-        
-        self.move = False
 
-    def update(self):
-        if self.move:
-            self.image = self.image_move
-            self.rect.x += 35
+        self.x = self.rect.x
+        self.y = self.rect.y
+
+        self.move = False
 
 class StarsCalification(Sprite):
     def __init__(self,calification,posx,posy):
