@@ -17,10 +17,13 @@ class Timer():
 	def time(self):
 		"""Return current time"""
 		if self.running:
-			self.__time = (time.clock() - self.start())
-			return self.__time
-		return self.__time
+			self._time = (time.clock() - self.start())
+		else:
+			self._time = None
+		return self._time		
 
+	def resume(self):
+		self.running = True
 
 	def stop(self):
 		"""Stop timer"""

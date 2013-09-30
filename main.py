@@ -3,7 +3,7 @@
 import pygame
 from pygame.locals import *
 
-from Star import Star, StarsCalification, StarMove
+from Star import Star, StarsCalification, StarMove, ObjectMoveGoal
 from Button import Button
 from Text import Text
 from Timer import Timer
@@ -72,7 +72,7 @@ class Menu():
         self.fonts = {
                     'large' : pygame.font.Font("resources/CrashLandingBB.ttf",120), 
                     'middle' : pygame.font.Font("resources/CrashLandingBB.ttf",40),
-                    'small' : pygame.font.Font("resources/CrashLandingBB.ttf",35)     
+                    'small' : pygame.font.Font("resources/ThrowMyHandsUpintheAirBold.ttf",30)     
         }
 
         #Colors
@@ -81,7 +81,6 @@ class Menu():
         self.text_play = Text(self.fonts['large'],language.read(languageID,'play'),self.white,SCREEN_WIDTH/2,400)
         self.text_goal = Text(self.fonts['small'],language.read(languageID,'goal'),self.white,1900,650)
 
-        self.credits_clic = 0
         print "Menu() created"
 
     def update(self):
@@ -93,9 +92,6 @@ class Menu():
                 if self.button_play.rect.collidepoint(event.pos[0],event.pos[1]):
                     worldselector_start()
                 if self.button_logo.rect.collidepoint(event.pos[0],event.pos[1]):
-                    self.credits_clic += 1
-                    if self.credits_clic >= 3:
-                        self.credits_clic = 0
                         self.credits = Credits()
                         self.credits.status = True
                         self.credits.update(screen)
@@ -207,6 +203,7 @@ class LevelsSelector():
 
         self.buttons_levels = pygame.sprite.Group()
         self.califications_levels = pygame.sprite.Group()
+        self.numbers_levels = pygame.sprite.Group()
 
         self.title = Text(self.fonts['large'],self.language.read(self.languageID,'levels'),self.white,512,70)
 
@@ -226,22 +223,25 @@ class LevelsSelector():
             
             if i <5:
                 self.levels.append(Button('resources/button_'+self.difficult+self.status+'.png',174+175*i,250))                   
-                self.text_numbers.append(Text(self.fonts['medium'],self.numbers[i],self.white,174+175*i,250))
                 if self.calification_level[i-1] == '3' or i == 0:
-                    self.starscalification.append(StarsCalification(int(self.calification_level[i]),174+175*i,305))
+                    self.text_numbers.append(Text(self.fonts['medium'],self.numbers[i],self.white,174+175*i,250))
+                    self.starscalification.append(StarsCalification(int(self.calification_level[i]),174+175*i,295))
                     self.califications_levels.add(self.starscalification[i])
+                    self.numbers_levels.add(self.text_numbers[i])
             elif i>=5 and i<10:
                 self.levels.append(Button('resources/button_'+self.difficult+self.status+'.png',174+175*i-875,425))
-                self.text_numbers.append(Text(self.fonts['medium'],self.numbers[i],self.white,174+175*i-875,425))
                 if self.calification_level[i-1] == '3':
-                    self.starscalification.append(StarsCalification(int(self.calification_level[i]),174+175*i-875,480))
+                    self.text_numbers.append(Text(self.fonts['medium'],self.numbers[i],self.white,174+175*i-875,425))
+                    self.starscalification.append(StarsCalification(int(self.calification_level[i]),174+175*i-875,470))
                     self.califications_levels.add(self.starscalification[i])
+                    self.numbers_levels.add(self.text_numbers[i])
             elif i>=10:
                 self.levels.append(Button('resources/button_'+self.difficult+self.status+'.png',174+175*i-1750,+600))
-                self.text_numbers.append(Text(self.fonts['medium'],self.numbers[i],self.white,174+175*i-1750,600))
                 if self.calification_level[i-1] == '3':
-                    self.starscalification.append(StarsCalification(int(self.calification_level[i]),174+175*i-1750,655))
+                    self.text_numbers.append(Text(self.fonts['medium'],self.numbers[i],self.white,174+175*i-1750,600))
+                    self.starscalification.append(StarsCalification(int(self.calification_level[i]),174+175*i-1750,645))
                     self.califications_levels.add(self.starscalification[i])
+                    self.numbers_levels.add(self.text_numbers[i])
                     
             self.buttons_levels.add(self.levels[i])
 
@@ -261,8 +261,7 @@ class LevelsSelector():
         screen.blit(self.background,(0,0))
         self.buttons_levels.draw(screen)
         self.califications_levels.draw(screen)
-        for i in range(0,15):
-            self.text_numbers[i].draw(screen)
+        self.numbers_levels.draw(screen)
         self.title.draw(screen) 
         pygame.display.flip()      
         
@@ -371,7 +370,7 @@ class Credits():
         #Fonts
         self.fonts = {
                     'large' : pygame.font.Font('resources/CrashLandingBB.ttf',130), 
-                    'medium' : pygame.font.Font('resources/ThrowMyHandsUpintheAirBold.ttf',30),
+                    'medium' : pygame.font.Font('resources/ThrowMyHandsUpintheAirBold.ttf',40),
         } 
 
         #Colors
@@ -431,20 +430,20 @@ class Game():
                 self.name = self.levels_namescfg.read(self.continent,"bglevel"+str(self.level))
         
         self.font = pygame.font.Font('resources/ThrowMyHandsUpintheAirBold.ttf',35)        
-        self.level_title = Text(self.font,self.name,self.black,SCREEN_WIDTH/4,30)
+        self.level_title = Text(self.font,self.name,self.black,SCREEN_WIDTH/3+40,30)
 
         #Timer 
         self.timer = Timer()
-        self.timer.start()
 
         self.tweener = pytweener.Tweener()
 
         self.star = Star(self.difficult)  
+        self.button_returnmenu = Button('resources/button_returnmenu.png',830,30)
         self.button_playreboot = Button('resources/button_playreboot.png',900,30)
         self.button_pause = Button('resources/button_pause.png',970,30)      
 
         self.sprites = pygame.sprite.Group()
-        #self.sprites.add(self.star)
+        self.sprites.add(self.button_returnmenu)
         self.sprites.add(self.button_playreboot)
         self.sprites.add(self.button_pause)
 
@@ -461,7 +460,10 @@ class Game():
     def update(self):
         for event in pygame.event.get():              
             if event.type == MOUSEBUTTONDOWN:
+                if self.button_returnmenu.rect.collidepoint(event.pos[0],event.pos[1]):
+                    levelsselector_start(self.continent,self.difficult)
                 if self.button_pause.rect.collidepoint(event.pos[0],event.pos[1]):
+                    self.timer.stop()
                     self.pause.status = True
                 if self.button_playreboot.rect.collidepoint(event.pos[0],event.pos[1]):
                     game_start(self.level,self.continent,self.difficult)
@@ -471,28 +473,31 @@ class Game():
                             android.vibrate(1)
                         self.star.move = True
                         self.star.image = self.star.image_move
-                        self.tweener.addTween(self.star,x=1024,tweenTime=1.5, tweenType=pytweener.Easing.Elastic.easeIn)
-                        if self.timer.time()<2:
+                        self.tweener.addTween(self.star,x=1024,tweenTime=1, tweenType=pytweener.Easing.Elastic.easeIn)
+                        if self.timer.time()<=4:
                             #Write rating of level and total rating of continent
                             self.rating_level.write(self.continent+self.difficult,str(self.level),3)
-                            self.star.move = True
-                        elif self.timer.time()>=2 and self.timer.time()<= 4:
+                            self.level_goal = LevelGoal(3)
+                        elif self.timer.time()>4 and self.timer.time()<= 6:
                             if self.current_rating_level == 3:
                                 pass
                             else:
                                 #Write rating of level and total rating of continent
                                 self.rating_level.write(self.continent+self.difficult,str(self.level),2)
-                        elif self.timer.time()> 4:
+                            self.level_goal = LevelGoal(2)
+                        elif self.timer.time()> 6:
                             if self.current_rating_level == 2 or self.current_rating_level == 3:
                                 pass
                             else:
                                 #Write rating of level and total rating of continent
                                 self.rating_level.write(self.continent+self.difficult,str(self.level),1)
-                        self.timer.stop()
+                            self.level_goal = LevelGoal(1)
+                        self.timer.stop() 
 
+        print self.timer.time()
         self.dt = self.clock.tick(60)
         self.tweener.update(self.dt/1000.0)
- 
+
     def draw(self,screen):
         screen.blit(self.background,(0,0))
         screen.blit(self.title_shadow,(0,0))
@@ -507,6 +512,11 @@ class Game():
 
         #Instance GameCounter with funcion update. Parameters: screen. __draw()
         self.game_counter.update(screen)
+        
+        #Instance LevelGoal with funcion update. Parameters: screen. __draw()
+        if self.star.x > 1000:
+            self.level_goal.state = True
+            self.level_goal.update(screen)
 
 class GameCounter():
     def __init__(self):
@@ -526,7 +536,9 @@ class GameCounter():
             self.counter -= self.timer.time() * 100 
 
             if self.counter < 0:
-                self.state = False 
+                self.state = False
+                self.timer.stop()
+                scene.timer.start() 
 
             #make text in update, why is a object that renew
             self.text_counter = Text(self.font,int(math.ceil(self.counter/4000)),(255,255,255),SCREEN_WIDTH/2,SCREEN_HEIGHT/2)              
@@ -540,6 +552,86 @@ class GameCounter():
 
         screen.blit(self.background,(0,0))
         self.text_counter.draw(screen)
+        pygame.display.flip()
+
+class LevelGoal():
+    def __init__(self,score):
+        self.background = pygame.image.load('resources/goal_screen.png').convert_alpha()
+        self.score = score
+
+        self.buttons = pygame.sprite.Group()
+
+        self.button_returnmenu = Button('resources/button_returnmenu.png',470,580)
+
+        self.stars = []
+        
+        if self.score == 1:
+            self.stars.append(ObjectMoveGoal('resources/star_goal.png',355,750))
+            self.stars.append(ObjectMoveGoal('resources/star_goalno.png',483,750))
+            self.stars.append(ObjectMoveGoal('resources/star_goalno.png',605,750))
+
+            self.button_playgame = Button('resources/button_playreboot.png',550,580)
+        elif self.score == 2:
+            self.stars.append(ObjectMoveGoal('resources/star_goal.png',355,750))
+            self.stars.append(ObjectMoveGoal('resources/star_goalno.png',483,750))
+            self.stars.append(ObjectMoveGoal('resources/star_goal.png',605,750))  
+            
+            self.button_playgame = Button('resources/button_playreboot.png',550,580) 
+        elif self.score == 3:
+            self.stars.append(ObjectMoveGoal('resources/star_goal.png',355,750))
+            self.stars.append(ObjectMoveGoal('resources/star_goal.png',483,750))
+            self.stars.append(ObjectMoveGoal('resources/star_goal.png',605,750))
+
+            self.button_playgame = Button('resources/button_playgame.png',550,580)         
+
+        self.buttons.add(self.button_returnmenu)
+        self.buttons.add(self.button_playgame)
+
+        self.state = False
+        self.state_return_menu = True
+
+        self.tweener = pytweener.Tweener()
+
+        self.tweener.addTween(self.stars[0],y=350,tweenTime=2.0,tweenType=pytweener.Easing.Elastic.easeOut)
+        self.tweener.addTween(self.stars[1],y=300,tweenTime=3.0,tweenType=pytweener.Easing.Elastic.easeOut)
+        self.tweener.addTween(self.stars[2],y=350,tweenTime=4.0,tweenType=pytweener.Easing.Elastic.easeOut)
+    
+    def update(self,screen):
+        while self.state:
+            for event in pygame.event.get():              
+                if event.type == MOUSEBUTTONDOWN:
+                    if self.button_returnmenu.rect.collidepoint(event.pos[0],event.pos[1]): 
+                        self.state = False
+                        self.state_return_menu = False     
+                        levelsselector_start(scene.continent,scene.difficult)
+                    elif self.button_playgame.rect.collidepoint(event.pos[0],event.pos[1]):
+                        self.state = False
+                        self.state_return_menu = False
+                        if self.score==3:
+                            if scene.level == 15:
+                                levelsselector_start(scene.continent,scene.difficult)
+                            else:
+                                game_start(scene.level+1,scene.continent,scene.difficult)
+                        else:
+                            game_start(scene.level,scene.continent,scene.difficult)
+
+            #Bug fix button_returnmenu (scene levelselector)
+            if self.state_return_menu:
+                self._draw(screen)
+                #Take clock.tick of main scene = Game()
+                self.tweener.update(scene.dt/1000.0)
+
+    def _draw(self,screen):
+        #Doesnt loss images of previous scene
+        screen.blit(scene.background,(0,0))
+        screen.blit(scene.title_shadow,(0,0))
+        scene.level_title.draw(screen)
+
+        screen.blit(self.background,(201,80))
+        screen.blit(self.stars[0].image,(self.stars[0].x,self.stars[0].y))
+        screen.blit(self.stars[1].image,(self.stars[1].x,self.stars[1].y))
+        screen.blit(self.stars[2].image,(self.stars[2].x,self.stars[2].y))
+        self.buttons.draw(screen)
         pygame.display.flip()
 
 class Pause():
@@ -560,8 +652,9 @@ class Pause():
             for event in pygame.event.get():     
                 if event.type == MOUSEBUTTONDOWN:
                     if self.button_play.rect.collidepoint(event.pos[0],event.pos[1]):
+                        scene.timer.resume()
                         self.status = False
-
+                        
             self._draw(screen)     
 
     def _draw(self,screen):
@@ -615,9 +708,9 @@ def main():
     clock = pygame.time.Clock()
 
     #scene = LevelsSelector("Africa","Easy")
-    scene = WorldSelector()
-    #scene = Menu()
-    #scene = Game(3,"Africa","Easy")
+    #scene = WorldSelector()
+    scene = Menu()
+    #scene = Game(12,"America","Easy")
 
     if android:
         android.init() #Android init

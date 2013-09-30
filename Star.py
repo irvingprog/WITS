@@ -45,4 +45,13 @@ class StarMove(Sprite):
             self.rect.x = random.randint(600,1450)
             self.rect.y = random.randint(-400,-10)
 
+class ObjectMoveGoal(Sprite):
+    def __init__(self,image,x,y):
+        Sprite.__init__(self)
+        self.image = pygame.image.load(image).convert_alpha()
+        self.x = x
+        self.y = y
+
+        self.state = False
+
         
