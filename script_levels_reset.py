@@ -20,8 +20,8 @@ def fill():
 		calification.write("AfricaMedium",str(i),3)
 		calification.write("AfricaHard",str(i),3)
 
-		#calification.write("AmericaEasy",str(i),3)
-		#calification.write("AmericaMedium",str(i),3)
-		#calification.write("AmericaHard",str(i),3)	
+		calification.write("AmericaEasy",str(i),3)
+		calification.write("AmericaMedium",str(i),3)
+		calification.write("AmericaHard",str(i),3)	
 
-fill()
+reset()
