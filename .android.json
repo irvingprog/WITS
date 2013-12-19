@@ -1,0 +1,1 @@
+{"layout": "internal", "orientation": "landscape", "package": "com.impulsalabs.irving.wits", "include_pil": false, "expansion": false, "name": "Where's the star?", "source": false, "icon_name": "Where's the star?", "version": "1.1", "permissions": ["VIBRATE"], "include_sqlite": false, "numeric_version": "11"}
