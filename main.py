@@ -46,7 +46,7 @@ rating_continent = CfgUtils("configuration/levels_rating.cfg")
 '''
 ####################8###############################
 #                  SCENES                          #
-####################################################
+####################################################zz
 '''
 class Menu():
     def __init__(self):
@@ -670,22 +670,18 @@ class Pause():
 ####################################################
 '''
 def game_start(level, continent, difficult):
-    print "Changed scene to Game()"+"Continent: "+str(continent)+" Level: "+str(level)+" Difficult: "+difficult
     global scene;
     scene = Game(level, continent, difficult)
 
 def worldselector_start():
-    print "Changed scene to WorldSelector()"
     global scene
     scene = WorldSelector()
 
 def difficult_start(continent):
-    print "Changed scene to Difficult()"
     global scene
     scene = Difficult(continent)
 
 def levelsselector_start(continent,difficult):
-    print "Changed scene to LevelsSelector " + difficult
     global scene
     scene = LevelsSelector(continent,difficult)
 
