@@ -417,7 +417,7 @@ class Game():
         self.rating_level = CfgUtils('configuration/levels_rating.cfg')
         self.current_rating_level = int(self.rating_level.read(self.continent+self.difficult,str(self.level)))
 
-        self.levels_namescfg = CfgUtils('configuration/levels_names.cfg')
+        self.levels_namescfg = CfgUtils('configuration/levels_names_' + languageID + '.cfg')
 
         #Colors
         self.black = (0,0,0)
@@ -494,7 +494,8 @@ class Game():
                             self.level_goal = LevelGoal(1)
                         self.timer.stop() 
 
-        print self.timer.time()
+        #print self.timer.time()
+        self.timer.time()
         self.dt = self.clock.tick(60)
         self.tweener.update(self.dt/1000.0)
 
