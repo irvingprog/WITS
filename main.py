@@ -7,8 +7,7 @@ from Star import Star, StarsCalification, StarMove, ObjectMoveGoal
 from Button import Button
 from Text import Text
 from Timer import Timer
-
-from CfgUtils import CfgUtils
+from configuration import Configuration
 
 import pytweener
 
@@ -37,11 +36,16 @@ pygame.display.set_caption("Where is the star?")
 pygame.display.set_icon(pygame.image.load("resources/star.png").convert_alpha())
 
 #Read configuration
-configuration = CfgUtils("configuration/configuration.cfg")
-languageID = configuration.read('Options','language')
-language = CfgUtils("configuration/language.cfg")
+Configuration = Configuration()
+configuration = Configuration.configuration_json()
 
-rating_continent = CfgUtils("configuration/levels_rating.cfg")
+language_ = Configuration.language_json()
+languageID = configuration['options']['language']
+
+language = language_[languageID]
+
+levels_rating = Configuration.levels_rating_json()
+
 
 '''
 ####################8###############################
@@ -77,10 +81,8 @@ class Menu():
         #Colors
         self.white = (255,255,255)
 
-        self.text_play = Text(self.fonts['large'],language.read(languageID,'play'),self.white,SCREEN_WIDTH/2,400)
-        self.text_goal = Text(self.fonts['small'],language.read(languageID,'goal'),self.white,1900,650)
-
-        print "Menu() created"
+        self.text_play = Text(self.fonts['large'],language['play'],self.white,SCREEN_WIDTH/2,400)
+        self.text_goal = Text(self.fonts['small'],language['goal'],self.white,1900,650)
 
     def update(self):
         for event in pygame.event.get():
@@ -126,11 +128,6 @@ class Difficult():
         self.buttons.add(self.button_medium)
         self.buttons.add(self.button_hard)
 
-        #Read configuration
-        self.configuration = CfgUtils('configuration/configuration.cfg')
-        self.languageID = self.configuration.read('Options','language')
-        self.language = CfgUtils('configuration/language.cfg')
-
         #Fonts
         self.fonts = {
                     'large' : pygame.font.Font('resources/CrashLandingBB.ttf',170),
@@ -140,10 +137,10 @@ class Difficult():
         #Colors
         self.white = (255,255,255)
 
-        self.title = Text(self.fonts['large'],self.language.read(self.languageID,'dificult'),self.white,512,70)
-        self.text_easy = Text(self.fonts['medium'],self.language.read(self.languageID,'easy'),self.white,512,250)
-        self.text_medium = Text(self.fonts['medium'],self.language.read(self.languageID,'medium'),self.white,512,375)
-        self.text_hard = Text(self.fonts['medium'],self.language.read(self.languageID,'hard'),self.white,512,500)
+        self.title = Text(self.fonts['large'],language['dificult'],self.white,512,70)
+        self.text_easy = Text(self.fonts['medium'],language['easy'],self.white,512,250)
+        self.text_medium = Text(self.fonts['medium'],language['medium'],self.white,512,375)
+        self.text_hard = Text(self.fonts['medium'],language['hard'],self.white,512,500)
 
         print "Difficult() created"
 
@@ -181,13 +178,7 @@ class LevelsSelector():
         self.numbers = []
         self.text_numbers = []
         self.starscalification = []
-
-        #Read configuration
-        self.configuration = CfgUtils('configuration/configuration.cfg')
-        self.languageID = self.configuration.read('Options','language')
-        self.language = CfgUtils('configuration/language.cfg')
-
-        self.levels_cfg = CfgUtils('configuration/levels_rating.cfg')
+        
 
         #Fonts
         self.fonts = {
@@ -202,43 +193,41 @@ class LevelsSelector():
         self.califications_levels = pygame.sprite.Group()
         self.numbers_levels = pygame.sprite.Group()
 
-        self.title = Text(self.fonts['large'],self.language.read(self.languageID,'levels'),self.white,512,70)
+        self.title = Text(self.fonts['large'],language['levels'],self.white,512,70)
 
-        #Califications levels to list
-        self.calification_level = []
-        for i in range(0,15):
-            self.calification_level.append(self.levels_cfg.read(self.continent+self.difficult,str(i+1)))
 
-        #Buttons creation
-        for i in range(0,15):
-            self.numbers.append(i+1)
+        self.califications = []
+        for i in xrange(0,15):
+            self.califications.append(int(levels_rating[self.continent+self.difficult][str(i+1)]))
 
-            if self.calification_level[i-1] == '3' or i == 0:
+        for i in xrange(0, 15):
+            if self.califications[i-1] == 3 or i == 0:
                 self.status = ''
             else:
-                    self.status = '_lock'
-
-            if i <5:
+                self.status = '_lock'
+            if i < 5:
+                if self.status == '':
+                    self.text_numbers.append(Text(self.fonts['medium'],str(i+1),self.white,174+175*i,250))
+                    self.starscalification.append(StarsCalification(self.califications[i],174+175*i,295))
+                    self.numbers_levels.add(self.text_numbers[-1])
+                    self.califications_levels.add(self.starscalification[-1])
                 self.levels.append(Button('resources/button_'+self.difficult+self.status+'.png',174+175*i,250))
-                if self.calification_level[i-1] == '3' or i == 0:
-                    self.text_numbers.append(Text(self.fonts['medium'],self.numbers[i],self.white,174+175*i,250))
-                    self.starscalification.append(StarsCalification(int(self.calification_level[i]),174+175*i,295))
-                    self.califications_levels.add(self.starscalification[i])
-                    self.numbers_levels.add(self.text_numbers[i])
+
             elif i>=5 and i<10:
+                if self.status == '':
+                    self.text_numbers.append(Text(self.fonts['medium'],str(i+1),self.white,174+175*i-875,425))
+                    self.starscalification.append(StarsCalification(self.califications[i],174+175*i-875,470))
+                    self.numbers_levels.add(self.text_numbers[-1])
+                    self.califications_levels.add(self.starscalification[-1])
                 self.levels.append(Button('resources/button_'+self.difficult+self.status+'.png',174+175*i-875,425))
-                if self.calification_level[i-1] == '3':
-                    self.text_numbers.append(Text(self.fonts['medium'],self.numbers[i],self.white,174+175*i-875,425))
-                    self.starscalification.append(StarsCalification(int(self.calification_level[i]),174+175*i-875,470))
-                    self.califications_levels.add(self.starscalification[i])
-                    self.numbers_levels.add(self.text_numbers[i])
+
             elif i>=10:
+                if self.status == '':
+                    self.text_numbers.append(Text(self.fonts['medium'],str(i+1),self.white,174+175*i-1750,600))
+                    self.starscalification.append(StarsCalification(self.califications[i],174+175*i-1750,645))
+                    self.numbers_levels.add(self.text_numbers[-1])
+                    self.califications_levels.add(self.starscalification[-1])
                 self.levels.append(Button('resources/button_'+self.difficult+self.status+'.png',174+175*i-1750,600))
-                if self.calification_level[i-1] == '3':
-                    self.text_numbers.append(Text(self.fonts['medium'],self.numbers[i],self.white,174+175*i-1750,600))
-                    self.starscalification.append(StarsCalification(int(self.calification_level[i]),174+175*i-1750,645))
-                    self.califications_levels.add(self.starscalification[i])
-                    self.numbers_levels.add(self.text_numbers[i])
 
             self.buttons_levels.add(self.levels[i])
 
@@ -251,7 +240,7 @@ class LevelsSelector():
             if event.type == MOUSEBUTTONDOWN:
                 for i in range(0,15):
                     if self.levels[i].rect.collidepoint(event.pos[0],event.pos[1]):
-                        if self.calification_level[i-1] == '3' or i == 0:
+                        if self.califications[i-1] == 3 or i == 0:
                             game_start(i+1, self.continent, self.difficult)
 
     def draw(self,screen):
@@ -274,13 +263,13 @@ class WorldSelector():
         self.rating_Europe = 0
 
         for i in range(1,16):
-            self.rating_Africa += int(rating_continent.read("AfricaEasy",str(i)))
-            self.rating_Africa += int(rating_continent.read("AfricaMedium",str(i)))
-            self.rating_Africa += int(rating_continent.read("AfricaHard",str(i)))
+            self.rating_Africa += int(levels_rating['AfricaEasy'][str(i)])
+            self.rating_Africa += int(levels_rating["AfricaMedium"][str(i)])
+            self.rating_Africa += int(levels_rating["AfricaHard"][str(i)])
 
-            self.rating_America += int(rating_continent.read("AmericaEasy",str(i)))
-            self.rating_America += int(rating_continent.read("AmericaMedium",str(i)))
-            self.rating_America += int(rating_continent.read("AmericaHard",str(i)))
+            self.rating_America += int(levels_rating["AmericaEasy"][str(i)])
+            self.rating_America += int(levels_rating["AmericaMedium"][str(i)])
+            self.rating_America += int(levels_rating["AmericaHard"][str(i)])
 
         #Fonts
         self.fonts = {
@@ -294,9 +283,9 @@ class WorldSelector():
 
         self.text = pygame.sprite.Group()
 
-        self.title = Text(self.fonts['large'],language.read(languageID,'continent'),self.white,SCREEN_WIDTH/2,70)
+        self.title = Text(self.fonts['large'],language['continent'],self.white,SCREEN_WIDTH/2,70)
 
-        self.text_Africa = Text(self.fonts['small'],language.read(languageID,"africa"),self.white,110,300)
+        self.text_Africa = Text(self.fonts['small'],language["africa"],self.white,110,300)
         self.text_rating_Africa = Text(self.fonts['small2'],str(self.rating_Africa)+"/135",self.white,110,510)
         self.text_Africa.rotate(50)
 
@@ -304,7 +293,7 @@ class WorldSelector():
         if self.rating_Africa == 135:
             self.button_America_image = 'resources/button_America.png'
 
-            self.text_America = Text(self.fonts['small'],language.read(languageID,"america"),self.white,310,300)
+            self.text_America = Text(self.fonts['small'],language["america"],self.white,310,300)
             self.text_rating_America = Text(self.fonts['small2'],str(self.rating_America)+"/135",self.white,310,510)
             self.text_America.rotate(50)
 
@@ -359,11 +348,6 @@ class Credits():
         self.background = pygame.image.load('resources/background_credits.png').convert_alpha()
         self.logo = pygame.image.load('resources/logomini.png').convert_alpha()
 
-        self.credits = language.read(languageID,"credits")
-        self.mainidea = language.read(languageID,"mainidea")
-        self.developer = language.read(languageID,"developer")
-        self.designer = language.read(languageID,"designer")
-
         #Fonts
         self.fonts = {
                     'large' : pygame.font.Font('resources/CrashLandingBB.ttf',130),
@@ -374,10 +358,10 @@ class Credits():
         self.white = (255,255,255)
 
         #Text
-        self.text_credits  = Text(self.fonts['large'],self.credits,self.white,SCREEN_WIDTH/2,70)
-        self.text_mainidea = Text(self.fonts['medium'],self.mainidea,self.white,SCREEN_WIDTH/2,350)
-        self.text_developer = Text(self.fonts['medium'],self.developer,self.white,SCREEN_WIDTH/2,450)
-        self.text_designer = Text(self.fonts['medium'],self.designer,self.white,SCREEN_WIDTH/2,550)
+        self.text_credits  = Text(self.fonts['large'],language['credits'],self.white,SCREEN_WIDTH/2,70)
+        self.text_mainidea = Text(self.fonts['medium'],language['mainidea'],self.white,SCREEN_WIDTH/2,350)
+        self.text_developer = Text(self.fonts['medium'],language['developer'],self.white,SCREEN_WIDTH/2,450)
+        self.text_designer = Text(self.fonts['medium'],language['designer'],self.white,SCREEN_WIDTH/2,550)
 
         self.status = False
     def update(self,screen):
@@ -411,17 +395,13 @@ class Game():
         self.continent = continent
         self.difficult = difficult
 
-        self.rating_level = CfgUtils('configuration/levels_rating.cfg')
-        self.current_rating_level = int(self.rating_level.read(self.continent+self.difficult,str(self.level)))
-
-        self.levels_namescfg = CfgUtils('configuration/levels_names_' + languageID + '.cfg')
-
+        self.current_rating_level = int(levels_rating[self.continent+self.difficult][str(self.level)])
         #Colors
         self.black = (0,0,0)
         self.white = (255,255,255)
         
         self.background = pygame.image.load('resources/levels/'+self.continent+'/bglevel'+str(self.level)+'.jpg').convert()
-        self.name = self.levels_namescfg.read(self.continent,"bglevel"+str(self.level))
+        self.name = Configuration.level_name_json(languageID, self.continent, self.level)
 
         self.font = pygame.font.Font('resources/ThrowMyHandsUpintheAirBold.ttf',35)
         self.level_title = Text(self.font,self.name,self.black,SCREEN_WIDTH/3+40,30)
@@ -470,21 +450,22 @@ class Game():
                         self.tweener.addTween(self.star,x=1024,tweenTime=1, tweenType=pytweener.Easing.Elastic.easeIn)
                         if self.timer.time()<=4:
                             #Write rating of level and total rating of continent
-                            self.rating_level.write(self.continent+self.difficult,str(self.level),3)
+                            levels_rating[self.continent+self.difficult][str(self.level)] = "3"
+                            Configuration.override_rating_json(levels_rating)
                             self.level_goal = LevelGoal(3)
                         elif self.timer.time()>4 and self.timer.time()<= 6:
                             if self.current_rating_level == 3:
                                 pass
                             else:
-                                #Write rating of level and total rating of continent
-                                self.rating_level.write(self.continent+self.difficult,str(self.level),2)
+                                levels_rating[self.continent+self.difficult][str(self.level)] = "2"
+                                Configuration.override_rating_json(levels_rating)
                             self.level_goal = LevelGoal(2)
                         elif self.timer.time()> 6:
                             if self.current_rating_level == 2 or self.current_rating_level == 3:
                                 pass
                             else:
-                                #Write rating of level and total rating of continent
-                                self.rating_level.write(self.continent+self.difficult,str(self.level),1)
+                                levels_rating[self.continent+self.difficult][str(self.level)] = "1"
+                                Configuration.override_rating_json(levels_rating)
                             self.level_goal = LevelGoal(1)
                         self.timer.stop()
 
@@ -635,7 +616,7 @@ class Pause():
         self.button_play = Button('resources/button_playgame.png',760,30)
 
         self.font = pygame.font.Font('resources/ThrowMyHandsUpintheAirBold.ttf',300)
-        self.text_pause = Text(self.font,language.read(languageID,'pause'),(255,255,255),SCREEN_WIDTH/2,SCREEN_HEIGHT/2)
+        self.text_pause = Text(self.font,language['pause'],(255,255,255),SCREEN_WIDTH/2,SCREEN_HEIGHT/2)
 
         self.buttons = pygame.sprite.Group()
         self.buttons.add(self.button_play)
@@ -698,13 +679,13 @@ def main():
 
     clock = pygame.time.Clock()
 
-    #scene = LevelsSelector("Africa","Easy")
+    scene = LevelsSelector("Africa","Easy")
     #scene = WorldSelector()
-    scene = Menu()
+    #scene = Menu()
     #scene = Game(12,"America","Easy")
 
     if android:
-        android.init()  #Android init
+        android.init()  #AndroidWorldSelec init
         android.map_key(android.KEYCODE_BACK, pygame.K_ESCAPE)
 
     while True:

@@ -1,0 +1,35 @@
+{
+	"English": {
+		"sound": "Sound",
+		"fullscreen" : "FullScreen",
+		"play" : "Play",
+		"medium" : "Medium",
+		"language" : "Language",
+		"dificult" : "Difficulty",
+		"hard" : "Hard",
+		"credits" : "Credits",
+		"levels" : "Levels",
+		"continent" :"Select The Continent",
+		"exit" : "Exit",
+		"easy" : "Easy",
+
+		"nextlevel" : "Next Level",
+		"configuration" : "Options",
+
+		"mainidea" : "Main idea: Sergio Galante",
+		"developer" : "Developer: Irving Rodriguez",
+		"designer" : "Designer: Antonio Morales",
+
+		"goal": "A shower of stars fell on planet earth, the stars are hidden on the continents, your goal is recover the stars. Enjoy  it ! ",
+
+		"africa" : "Africa",
+		"america" : "America",
+		"asia" : "Asia",
+		"australia" : "Australia",
+		"europe" : "Europe",
+
+		"pause" : "Pause",
+
+		"commingsoon" : "Comming Soon"
+	}
+}

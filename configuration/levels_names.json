@@ -1,0 +1,93 @@
+{
+	"English": {
+		"Africa": {
+			"1": "Nile River - Cairo, Egypt",
+			"2": "Nelson Mandela Bridge - Johanesburg, South Africa",
+			"3": "Church Square - Pretoria, South Africa",
+			"4": "Baobabs - Morondava, Madagascar ",
+			"5": "Carthage Ruins - Carthage, Tunisia",
+			"6": "Dune 45 - Namib Desert, Namibia",
+			"7": "Municipal Theatre - Tunis, Tunisia",
+			"8": "South Beach - Durban, South Africa",
+			"9": "Victoria Falls - Livingstone, Zambia",
+			"10" : "Giza Pyramids - Cairo, Egypt",
+			"11" : "Great Mosque of Djenne - Djenne, Mali",
+			"12" : "Lake of Fire - Afar, Ethiopia",
+			"13" : "Timimoun Oasis - Adrar Province, Algeria",
+			"14" : "White Desert - Farafra, Egypt",
+			"15" : "Lake Natro - Rift Valley, Tanzania"
+		},
+
+		"America" : {
+			"1": "White House - Washington D.C., USA",
+			"2": "Zona Arqueologica Tazumal - Santa Ana, El Salvador",
+			"3": "Kiosko Plaza de Armas - Tampico, Mexico",
+			"4": "Observatorio Alma - Atacama, Chile",
+			"5": "Statue of Liberty - New York, USA",
+			"6": "Cavernas del Rio Ramuy - Lares, Puerto Rico",
+			"7": "Fuerte de Portobelo - Portobelo, Panama",
+			"8": "Parque Arqueologico San Agustin - Huila, Colombia",
+			"9": "Palacio de Valle - Cienfuegos, Cuba",
+			"10" : "Cataratas del Iguazu -  Misiones, Argentina",
+			"11" : "El Tajin - Papantla, Mexico",
+			"12" : "Puente Tampico - Tampico, Mexico",
+			"13" : "Chan Chan - La Libertad, Peru",
+			"14" : "Cristo Redentor - Rio de Janeiro, Brazil",
+			"15" : "Teleferico - Panachi, Colombia"
+		},
+
+		"Asia" : {
+			"1" : "s",
+			"2" : "s", 
+			"3" : "s",
+			"4" : "s",
+			"5" : "Angkor Wat - Siem Riep, Camboya",
+			"6" : "s",
+			"7" : "s",
+			"8" : "s",
+			"9" : "s",
+			"10" : "s",
+			"11" : "s",
+			"12" : "s",
+			"13" : "s",
+			"14" : "s",
+			"15" : "s"
+		},
+
+		"Europe" : {
+			"1":"s",
+			"2":"s", 
+			"3":"s",
+			"4":"s",
+			"5":"s",
+			"6":"s",
+			"7":"s",
+			"8":"s",
+			"9":"s",
+			"10" :"s",
+			"11" :"s",
+			"12" :"s",
+			"13" :"s",
+			"14" :"s",
+			"15" :"s"
+		},
+
+		"Oceania" : {
+			"1":"s",
+			"2":"s", 
+			"3":"s",
+			"4":"s",
+			"5":"s",
+			"6":"s",
+			"7":"s",
+			"8":"s",
+			"9":"s",
+			"10" :"s",
+			"11" :"s",
+			"12" :"s",
+			"13" :"s",
+			"14" :"s",
+			"15" :"s"
+		}
+	}
+}
