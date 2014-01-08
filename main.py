@@ -679,9 +679,9 @@ def main():
 
     clock = pygame.time.Clock()
 
-    scene = LevelsSelector("Africa","Easy")
+    #scene = LevelsSelector("Africa","Easy")
     #scene = WorldSelector()
-    #scene = Menu()
+    scene = Menu()
     #scene = Game(12,"America","Easy")
 
     if android:
