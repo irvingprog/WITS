@@ -433,7 +433,9 @@ class Game():
 
     def update(self):
         for event in pygame.event.get():
-            if event.type == MOUSEBUTTONDOWN:
+            if event.type == QUIT:
+                exit()
+            elif event.type == MOUSEBUTTONDOWN:
                 if self.button_returnmenu.rect.collidepoint(event.pos[0],event.pos[1]):
                     levelsselector_start(self.continent,self.difficult)
                 if self.button_pause.rect.collidepoint(event.pos[0],event.pos[1]):
@@ -441,33 +443,29 @@ class Game():
                     self.pause.status = True
                 if self.button_playreboot.rect.collidepoint(event.pos[0],event.pos[1]):
                     game_start(self.level,self.continent,self.difficult)
-                if not self.star.move:
-                    if self.star.rect.collidepoint(event.pos[0],event.pos[1]):
-                        if android:
-                            android.vibrate(1)
-                        self.star.move = True
-                        self.star.image = self.star.image_move
-                        self.tweener.addTween(self.star,x=1024,tweenTime=1, tweenType=pytweener.Easing.Elastic.easeIn)
-                        if self.timer.time()<=4:
-                            #Write rating of level and total rating of continent
-                            levels_rating[self.continent+self.difficult][str(self.level)] = "3"
+                if (self.star.rect.collidepoint(event.pos[0],event.pos[1]) 
+                    and not self.star.move):
+                    if android:
+                        android.vibrate(1)
+                    self.star.change_state()
+                    self.tweener.addTween(self.star,x=1024,tweenTime=1, tweenType=pytweener.Easing.Elastic.easeIn)
+                    if self.timer.time()<=4:
+                        #Write rating of level and total rating of continent
+                        levels_rating[self.continent+self.difficult][str(self.level)] = "3"
+                        Configuration.override_rating_json(levels_rating)
+                        self.level_goal = LevelGoal(3)
+                    elif self.timer.time()>4 and self.timer.time()<= 6:
+                        if not self.current_rating_level == 3:
+                            levels_rating[self.continent+self.difficult][str(self.level)] = "2"
                             Configuration.override_rating_json(levels_rating)
-                            self.level_goal = LevelGoal(3)
-                        elif self.timer.time()>4 and self.timer.time()<= 6:
-                            if self.current_rating_level == 3:
-                                pass
-                            else:
-                                levels_rating[self.continent+self.difficult][str(self.level)] = "2"
-                                Configuration.override_rating_json(levels_rating)
-                            self.level_goal = LevelGoal(2)
-                        elif self.timer.time()> 6:
-                            if self.current_rating_level == 2 or self.current_rating_level == 3:
-                                pass
-                            else:
-                                levels_rating[self.continent+self.difficult][str(self.level)] = "1"
-                                Configuration.override_rating_json(levels_rating)
-                            self.level_goal = LevelGoal(1)
-                        self.timer.stop()
+                        self.level_goal = LevelGoal(2)
+                    elif self.timer.time()> 6:
+                        if (not self.current_rating_level == 2 or 
+                            not self.current_rating_level == 3):
+                            levels_rating[self.continent+self.difficult][str(self.level)] = "1"
+                            Configuration.override_rating_json(levels_rating)
+                        self.level_goal = LevelGoal(1)
+                    self.timer.stop()
 
         #print self.timer.time()
         self.timer.time()

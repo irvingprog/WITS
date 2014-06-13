@@ -20,6 +20,10 @@ class Star(Sprite):
 
         self.move = False
 
+    def change_state(self):
+        self.move = True
+        self.image = self.image_move
+
 class StarsCalification(Sprite):
     def __init__(self,calification,posx,posy):
         Sprite.__init__(self)
