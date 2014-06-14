@@ -73,20 +73,21 @@ class Menu():
 
         #Fonts
         self.fonts = {
-                    'large' : pygame.font.Font("resources/CrashLandingBB.ttf",120),
-                    'middle' : pygame.font.Font("resources/CrashLandingBB.ttf",40),
-                    'small' : pygame.font.Font("resources/ThrowMyHandsUpintheAirBold.ttf",30)
+            'large': pygame.font.Font("resources/CrashLandingBB.ttf", 120),
+            'middle': pygame.font.Font("resources/CrashLandingBB.ttf", 40),
+            'small': pygame.font.Font("resources/ThrowMyHandsUpintheAirBold.ttf", 30)
         }
 
         #Colors
-        self.white = (255,255,255)
+        self.white = (255, 255, 255)
 
         self.text_play = Text(self.fonts['large'],language['play'],self.white,SCREEN_WIDTH/2,400)
         self.text_goal = Text(self.fonts['small'],language['goal'],self.white,1900,650)
 
     def update(self):
         for event in pygame.event.get():
-            if event.type == QUIT or event.type == KEYDOWN and event.key == K_ESCAPE:
+            if (event.type == QUIT or
+                    event.type == KEYDOWN and event.key == K_ESCAPE):
                 exit()
 
             if event.type == MOUSEBUTTONDOWN:
@@ -178,7 +179,7 @@ class LevelsSelector():
         self.numbers = []
         self.text_numbers = []
         self.starscalification = []
-        
+
 
         #Fonts
         self.fonts = {
@@ -273,9 +274,9 @@ class WorldSelector():
 
         #Fonts
         self.fonts = {
-                    'large' : pygame.font.Font('resources/CrashLandingBB.ttf',100),
-                    'small' : pygame.font.Font('resources/ThrowMyHandsUpintheAirBold.ttf',50),
-                    'small2' : pygame.font.Font('resources/ThrowMyHandsUpintheAirBold.ttf',25)
+            'large' : pygame.font.Font('resources/CrashLandingBB.ttf',100),
+            'small' : pygame.font.Font('resources/ThrowMyHandsUpintheAirBold.ttf',50),
+            'small2' : pygame.font.Font('resources/ThrowMyHandsUpintheAirBold.ttf',25)
         }
 
         #Colors
@@ -399,7 +400,7 @@ class Game():
         #Colors
         self.black = (0,0,0)
         self.white = (255,255,255)
-        
+
         self.background = pygame.image.load('resources/levels/'+self.continent+'/bglevel'+str(self.level)+'.jpg').convert()
         self.name = Configuration.level_name_json(languageID, self.continent, self.level)
 
@@ -443,7 +444,7 @@ class Game():
                     self.pause.status = True
                 if self.button_playreboot.rect.collidepoint(event.pos[0],event.pos[1]):
                     game_start(self.level,self.continent,self.difficult)
-                if (self.star.rect.collidepoint(event.pos[0],event.pos[1]) 
+                if (self.star.rect.collidepoint(event.pos[0],event.pos[1])
                     and not self.star.move):
                     if android:
                         android.vibrate(1)
@@ -460,7 +461,7 @@ class Game():
                             Configuration.override_rating_json(levels_rating)
                         self.level_goal = LevelGoal(2)
                     elif self.timer.time()> 6:
-                        if (not self.current_rating_level == 2 or 
+                        if (not self.current_rating_level == 2 or
                             not self.current_rating_level == 3):
                             levels_rating[self.continent+self.difficult][str(self.level)] = "1"
                             Configuration.override_rating_json(levels_rating)

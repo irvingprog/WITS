@@ -1,30 +1,32 @@
 import time
 
+
 class Timer():
-	"""Module time for Games"""
-	def __init__(self):
-		self.running = False
-		self.offset = 0
+    """Module time for Games"""
+    def __init__(self):
+        self.running = False
+        self.offset = 0
 
-	def start(self):
-		"""Start timer"""
-		if not self.running:
-			self.running=True
-			self.offset = time.clock();
+    def start(self):
+        """Start timer"""
+        if not self.running:
+            self.running = True
+            self.offset = time.clock()
 
-		return self.offset
+        return self.offset
 
-	def time(self):
-		"""Return current time"""
-		if self.running:
-			self._time = (time.clock() - self.start())
-		else:
-			self._time = None
-		return self._time		
+    def time(self):
+        """Return current time"""
+        if self.running:
+            self._time = (time.clock() - self.start())
+        else:
+            self._time = None
 
-	def resume(self):
-		self.running = True
+        return self._time
 
-	def stop(self):
-		"""Stop timer"""
-		self.running = False
+    def resume(self):
+        self.running = True
+
+    def stop(self):
+        """Stop timer"""
+        self.running = False
